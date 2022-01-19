@@ -1,0 +1,508 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+
+#define STACK_H
+
+//defines a node type structure
+typedef struct node
+{
+    int num;
+    struct node *next;
+} Node, *NodePtr;
+
+//defines a list type structure
+typedef struct
+{
+    NodePtr Head;
+} ListType, *List;
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: initializes the list
+param: void
+return: list
+*/
+List initList(void) {
+    List list;
+
+    list = (List) malloc(sizeof (ListType));
+
+    list->Head = NULL;
+    return list;
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: initializes a new node
+param: integer x
+return: pointer np which is pointing at new node
+*/
+
+NodePtr newNode(int x) {
+    NodePtr np;
+    np = (NodePtr) malloc(sizeof (Node));
+    np->num = x;
+    np->next = NULL;
+    return (np);
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: checks if the list is empty
+param: list
+return: boolean
+*/
+
+bool isEmpty(List l) {
+    return (l->Head == NULL);
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: removes/deletes a duplicate node
+*/
+List delete(List l, int n) {
+    
+    NodePtr np = l, prev;
+
+    while (np != NULL && np->num == n)
+    {
+        l = np ->next;
+        free(np);
+        np = l;
+    }
+    while (np != NULL)
+    {
+        while (np != NULL && np->num != n)
+        {
+            prev = np;
+            np = np->next;
+        }
+        if (np == NULL)
+            return;
+        prev->next = np->next;
+        free(np);
+        np = prev->next;
+        
+    }
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: search for duplicate node, will return true if duplicate found
+*/
+bool search(List l, int n) {
+    NodePtr cur = l->Head, prev;
+    while (cur != NULL) {
+
+
+        if (cur-> num == n) {
+            return true;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+    return false;
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: inserts new node at the head/beginning of list
+ * will also call function search and delete, if search returns true
+ * delete new node, else, insert new node in list
+*/
+
+List insert(List l, int n) {
+    NodePtr cur;
+    cur = newNode(n);
+    if (search(l, n) == true) {
+        delete(l, n);
+        return (l);
+    } else {
+        cur->next = l->Head;
+        l->Head = cur;
+        return (l);
+    }
+
+}
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/14/2021
+Description: print new list
+*/
+void printList(List l) {
+    NodePtr current;
+    current = l->Head;
+    printf("\nOutput: ");
+    while (current != NULL) {
+        printf(" %c", (char) current->num);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stack.h"
+
+int main(int argc, char** argv)
+{
+    List myList;
+    myList = initList();
+
+    //generates the example character output for testing
+    insert(myList, 'a');
+    insert(myList, 'b');
+    insert(myList, 'a');
+    insert(myList, 'b');
+    insert(myList, 'c');
+    insert(myList, 'd');
+    insert(myList, 'e');
+    insert(myList, 'a');
+    insert(myList, 'b');
+    insert(myList, 'c');
+    insert(myList, 'b');
+    
+    
+    //goes through list and deletes the next duplicate letters
+    
+    printList(myList);
+    
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stack.h"
+#include <stdbool.h>
+//gcc main.c stack.h
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/12/2021
+*Description: main that will run the functions to delete or insert
+*characters into a buffer.
+*/
+int userIn = 0;
+char userChar = NULL;
+Stack s1;
+char disp= NULL;
+Stack stackForBuffer;
+int errCount;
+int move=0;
+bool didcreated;
+
+int main()
+{
+
+    //display the menu based operations for
+    printf("what Operations would you like to choose for the buffer:\n");
+    printf("0 to initialize buffer\n");
+    printf("1 to insert a character at cursor\n");
+    printf("2 to get the character at the cursor\n");
+    printf("3 to Delete character at the cursor\n");
+    printf("4 to Move the character to the left\n");
+    printf("5 to move the character to the right\n");
+    printf("6 to get the size of the buffer\n");
+    printf("7 to display the buffer\n");
+    printf("Any Other number to exit\n");
+    didcreated=false;
+    errCount=0;
+    //get userinput of choice and ensures that its an integer
+    while(scanf("%d", &userIn) == 1 && userIn >=0 && userIn <=7){
+            getchar();
+
+        //ifchoice was to initialize the buffer
+        if(userIn == 0){
+
+            //creates the two stacks using the create buffer method
+            //in the initStack function
+            createBuffer();
+            printf("Buffer: \n");
+            didcreated=true;
+
+        } else if (userIn == 1) {
+            printf("Insert a character at the cursor: ");
+           fflush(stdin);
+            scanf("%c", &userChar);
+            insert();
+           char tempL=s1->ST[s1->top];
+            struct Stack *ptr;
+
+            userIn=7;
+
+            } else if (userIn ==2){
+                get();
+
+            }else if (userIn ==3) {
+                delete();
+
+                userIn=7;
+
+            //moves to the left of the stack for the buffer
+            } else if (userIn ==4) {
+                printf("Move the character to the left: ");
+                scanf("%d", &move);
+                left(move);
+                getchar();
+                userIn=7;
+
+                //moves to the right of the stack for the buffer
+            }  else if (userIn ==5) {
+                printf("Move the character to the right: ");
+                scanf("%d", &move);
+                right(move);
+                getchar();
+                userIn=7;
+
+                //displays the size of the buffer
+            }else if (userIn ==6) {
+                int sizeOfStack = size(s1);
+                printf("\nThe size of the buffer is %d\n", sizeOfStack-1);
+
+                }
+                if (userIn == 7){
+                    char dispOrder [size(s1)];
+
+                    //printf("running7\n");
+                    //display the buffer
+                    printf("Buffer: ");
+                    int i = 0;
+                    while(i< size(s1)){
+                          if(s1->ST[i] != ' '&&s1->ST[i] != NULL){
+                        printf("%c ", s1->ST[i]);}
+
+                       i++;
+                }
+                printf("\n");
+
+            }
+    }
+
+    return 0;
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to insert a char at cursor position
+param: none
+return: none
+*/
+void insert(){
+    if(didcreated){
+        push(stackForBuffer,userChar);
+        push(s1, userChar);
+    } else {
+        printf("Buffer was not allocated");
+    }
+    }
+
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to create the buffer for the memory of the two stacks
+param: none
+return: none
+*/
+void createBuffer(){
+
+    s1 = initStack();
+    stackForBuffer = initStack();
+
+}
+
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to get the char at cursor position
+param: none
+return: none
+*/
+void get(){
+     printf("Character: %c\n", disp=top(stackForBuffer));
+     return disp;
+}
+
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to move cursor at left to insert
+param: int
+return: none
+*/
+void left(int k) {
+
+    //if the user wanted to move
+   // if(k>size(stackForBuffer))
+   if ((k-size(stackForBuffer))<0||size(stackForBuffer)-k<=0){
+        if(size(stackForBuffer)-k<=0){
+            k=size(stackForBuffer)-1;
+        } else{
+            //k=size(stackForBuffer)-2;
+
+        }
+   }
+
+    for(int i = k; i > 0; --i){
+
+         //memory is loosened to the left
+        pop(stackForBuffer);
+    }
+
+}
+
+/*
+**@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to delete character at cursor
+param: none
+return: none
+*/
+void delete(){
+
+    //take length of stackForBuffer
+    int position = size(stackForBuffer)-1;
+    pop(stackForBuffer);
+    Stack* temp = s1;
+    int toDel=0;
+
+    //goes to the exact area of the deleted char to remove
+    for (int i = 0; i<position;i++){
+           // printf("running Delete\n");
+            temp=s1->ST[i];
+            ++toDel;
+    }
+
+           s1->ST[size(stackForBuffer)]= ' ';
+
+           //if deleting in the middle
+           if (s1->ST[size(stackForBuffer)+1] != NULL
+               && size(stackForBuffer) < size(s1)){
+                   //printf("deleting %c ", s1->ST[size(stackForBuffer)]);
+            s1->ST[size(stackForBuffer)] = s1->ST[size(stackForBuffer)+1];
+
+           }
+
+           s1->ST[size(stackForBuffer)+1]=' ';
+
+            temp= NULL;
+            free (temp);
+
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to move cursor to right to insert
+param: int
+return: none
+*/
+void right(int k) {
+
+    //if user tries to move more than the actual s1 length
+    if(k +size(stackForBuffer)> size(s1)){
+        k=size(s1)-size(stackForBuffer);
+
+    }
+
+    for (int i =0; i <k;i++){
+        push(stackForBuffer,s1->ST[size(stackForBuffer+1)]);
+
+    }
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MaxStack 100
+
+
+//defines a stack type structure
+typedef struct{
+  	char top;
+    int ST[MaxStack];
+    char let;
+    struct StackType *nextPtr;
+    struct StackType *temp;
+    int endOf;
+} StackType, *Stack, *head;
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: initializes the stack
+param: none
+return: Stack
+*/
+Stack initStack(void){
+
+// allocating memory with the createBuffer and assign address to sp
+	Stack sp=(Stack) malloc (sizeof(StackType));
+// setting top -1
+	sp->top=NULL;
+	return sp;
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: checks if the stack is empty
+param: stack
+return: boolean
+*/
+bool isEmpty( Stack s){
+    return (s->top==NULL);
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to pop(remove) a character in stack
+*/
+int pop(Stack s){
+ 	if(isEmpty(s)){
+	 	printf("\n Error: Stack is empty");
+		return(-99999);
+	}
+ 	int hold=s->ST[s->top];
+	--(s->top);
+	return hold;
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to push(add) a character to the top of stack
+param: Stack, char
+return: none
+*/
+void push(Stack s, char n){
+	if(s->top==MaxStack-1){
+		//printf("\n Error: Stack overflow");
+		//exit(1);
+	}
+
+ 	++(s->top);
+    s->ST[s->top]=n;
+
+
+    s->ST[s->top+1]=NULL;
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to get the top(peek) data element of the stack without removing it
+param: Stack
+return: char
+*/
+char top(Stack s) {
+    //char displ =
+    return (s->ST[s->top]);
+}
+
+/*
+*@Author: Rohan Bhardwaj, @Date: 10/11/2021
+Description: method to get the size of the stack
+param: Stack
+return: int
+*/
+int size( Stack s){
+    int length = 0;
+    struct Stack* cur = s;
+    int deduc = (s->top);
+    //goes through the stack
+    while (cur != NULL){
+            if(cur!= ' '){
+        length++;}
+        cur = s->ST[deduc];
+        --deduc;
+    }
+    return length;
+}
